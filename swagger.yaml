@@ -1,0 +1,976 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "API Documentation"
+  description: "API documentation for authentication endpoints"
+tags:
+  - name: "Authentication"
+    description: "User authentication endpoints"
+
+securityDefinitions:
+  jwt:
+    type: "apiKey"
+    name: "Authorization"
+    in: "header"
+    description: "JWT authorization token. Example: Bearer <token>"
+
+components:
+  schemas:
+    requestErrorRes:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+        message:
+          type: "string"
+
+    UserDetail:
+      type: "object"
+      properties:
+        _id:
+          type: "string"
+        userName:
+          type: "string"
+        email:
+          type: "string"
+        role:
+          type: "string"
+    SignUpReq:
+      type: "object"
+      properties:
+        userName:
+          type: "string"
+          required: true
+          minLength: 3
+          maxLength: 20
+        email:
+          type: "string"
+          required: true
+          format: "email"
+        role:
+          type: "string"
+          required: true
+          enum:
+            - "ADMIN"
+            - "USER"
+        password:
+          type: "string"
+          required: true
+          minLength: 8
+          maxLength: 20
+    SignUpRes:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+        message:
+          type: "string"
+        user:
+          $ref: "#/components/schemas/UserDetail"
+        accessToken:
+          type: "string"
+    SignInReq:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+          required: true
+          format: "email"
+        password:
+          type: "string"
+          required: true
+          minLength: 8
+          maxLength: 20
+
+    categoryDetails:
+      type: "object"
+      properties:
+        _id:
+          type: "string"
+        name:
+          type: "string"
+        description:
+          type: "string"
+
+    addCategoryReq:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          minLength: 3
+          maxLength: 20
+        description:
+          type: "string"
+          minLength: 3
+          maxLength: 20
+    addCategoryRes:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+        message:
+          type: "string"
+        category:
+          $ref: "#/components/schemas/categoryDetails"
+    updateCategoryReq:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          minLength: 3
+          maxLength: 20
+        description:
+          type: "string"
+          minLength: 3
+          maxLength: 20
+    updateCategoryRes:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+        message:
+          type: "string"
+        category:
+          $ref: "#/components/schemas/categoryDetails"
+    getAllCategoryRes:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+        message:
+          type: "string"
+        categories:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/categoryDetails"
+    deleteCategoryRes:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+        message:
+          type: "string"
+
+    productDetails:
+      type: "object"
+      properties:
+        _id:
+          type: "string"
+        name:
+          type: "string"
+        description:
+          type: "string"
+        price:
+          type: "number"
+        categoryId:
+          type: "string"
+    addProductReq:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          minLength: 2
+          maxLength: 20
+        description:
+          type: "string"
+          minLength: 2
+          maxLength: 20
+        price:
+          type: "number"
+          minimum: 1
+        categoryId:
+          type: "string"
+    addProductRes:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+        success:
+          type: "boolean"
+        product:
+          $ref: "#/components/schemas/productDetails"
+    updateProductReq:
+      schema:
+        type: "object"
+        properties:
+          name:
+            type: "string"
+            minLength: 2
+            maxLength: 20
+          description:
+            type: "string"
+            minLength: 2
+            maxLength: 20
+          price:
+            type: "number"
+            minimum: 1
+          categoryId:
+            type: "string"
+    updateProductRes:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+        success:
+          type: "boolean"
+        product:
+          $ref: "#/components/schemas/productDetails"
+    getAllProductRes:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+        message:
+          type: "string"
+        totalProductCount:
+          type: "number"
+        products:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/productDetails"
+    deleteProductRes:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+        message:
+          type: "string"
+
+    orderDetails:
+      type: "object"
+      properties:
+        _id:
+          type: "string"
+          required: true
+        userId:
+          type: "string"
+          required: true
+        products:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              productId:
+                type: "string"
+              name:
+                type: "string"
+              quantity:
+                type: "number"
+              price:
+                type: "number"
+        totalAmount:
+          type: "number"
+        status:
+          type: "string"
+    addOrderReq:
+      type: "object"
+      properties:
+        products:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              productId:
+                type: "string"
+              quantity:
+                type: "number"
+              name:
+                type: "string"
+              price:
+                type: "number"
+        totalPrice:
+          type: "number"
+    addOrderRes:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+        message:
+          type: "string"
+        order:
+          $ref: "#/components/schemas/orderDetails"
+    getAllOrderRes:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+        message:
+          type: "string"
+        orders:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/orderDetails"
+
+    ratingDetails:
+      type: "object"
+      properties:
+        _id:
+          type: "string"
+        userId:
+          type: "string"
+        productId:
+          type: "string"
+        rating:
+          type: "number"
+        review:
+          type: "string"
+    addRatingReq:
+      type: "object"
+      properties:
+        productId:
+          type: "string"
+          required: true
+        rating:
+          type: "number"
+          required: true
+        review:
+          type: "string"
+          required: true
+    addRatingRes:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+        message:
+          type: "string"
+        rating:
+          $ref: "#/components/schemas/ratingDetails"
+    updateRatingReq:
+      type: "object"
+      properties:
+        rating:
+          type: "number"
+          required: true
+        review:
+          type: "string"
+          required: true
+    getRatingByProductIdRes:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+        message:
+          type: "string"
+        rating:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              count:
+                type: "number"
+              rating:
+                type: "string"
+              ratingArray:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    _id:
+                      type: "string"
+                    userId:
+                      type: "string"
+                    productId:
+                      type: "string"
+                    rating:
+                      type: "number"
+                    review:
+                      type: "string"
+                    user:
+                      type: "object"
+                      properties:
+                        userName:
+                          type: "string"
+
+paths:
+  /api/auth/signup:
+    post:
+      summary: "Sign up a new user (Role: Admin, User)"
+      tags:
+        - "Authentication"
+      parameters:
+        - name: "SignUpReq"
+          in: "body"
+          description: "User sign up request body"
+          required: true
+          schema:
+            $ref: "#/components/schemas/SignUpReq"
+
+      responses:
+        200:
+          description: "User signed up successfully"
+          schema:
+            $ref: "#/components/schemas/SignUpRes"
+        400:
+          description: "Invalid request body"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+  /api/auth/signin:
+    post:
+      summary: "Sign in a user (Role: Admin, User)"
+      tags:
+        - "Authentication"
+      parameters:
+        - name: "SignInReq"
+          in: "body"
+          description: "User sign in request body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              email:
+                type: "string"
+                format: "email"
+              password:
+                type: "string"
+                minLength: 8
+                maxLength: 20
+
+      responses:
+        200:
+          description: "User signed in successfully"
+          schema:
+            $ref: "#/components/schemas/SignUpRes"
+        400:
+          description: "Invalid request body"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+
+  /api/category/add:
+    post:
+      summary: "Add a new category  (Role: Admin)"
+      tags:
+        - "Category"
+      security:
+        - jwt: []
+      parameters:
+        - name: "addCategoryReq"
+          in: "body"
+          description: "Add category request body"
+          required: true
+          schema:
+            $ref: "#/components/schemas/addCategoryReq"
+
+      responses:
+        200:
+          description: "Category added successfully"
+          schema:
+            $ref: "#/components/schemas/addCategoryRes"
+        400:
+          description: "Invalid request body"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+  /api/category/{categoryId}:
+    put:
+      summary: "Update category by categoryId (Role: Admin)"
+      tags:
+        - "Category"
+      security:
+        - jwt: []
+      parameters:
+        - in: "path"
+          name: "categoryId"
+          description: "Category ID"
+          required: true
+
+        - in: "body"
+          name: "body"
+          description: "Updated category object"
+          type: "object"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+                minLength: 3
+                maxLength: 20
+              description:
+                type: "string"
+                minLength: 3
+                maxLength: 20
+
+      responses:
+        200:
+          description: "Category updated successfully"
+          schema:
+            $ref: "#/components/schemas/updateCategoryRes"
+        400:
+          description: "Invalid request body"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+    get:
+      summary: "Get category by categoryId , PUBLIC API"
+      tags:
+        - "Category"
+      parameters:
+        - name: "categoryId"
+          in: "path"
+          description: "Category id"
+          required: true
+          type: "string"
+
+      responses:
+        200:
+          description: "Category fetched successfully"
+          schema:
+            $ref: "#/components/schemas/updateCategoryRes"
+        400:
+          description: "Invalid request body"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+    delete:
+      summary: "Delete category by categoryId (Role: Admin)"
+      tags:
+        - "Category"
+      security:
+        - jwt: []
+      parameters:
+        - name: "categoryId"
+          in: "path"
+          description: "Category id"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Category deleted successfully"
+          schema:
+            $ref: "#/components/schemas/deleteCategoryRes"
+        400:
+          description: "Invalid request body"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+  /api/category/all:
+    get:
+      summary: "Get all categories PUBLIC API"
+      tags:
+        - "Category"
+      responses:
+        200:
+          description: "Categories fetched successfully"
+          schema:
+            $ref: "#/components/schemas/getAllCategoryRes"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+
+  /api/product/add:
+    post:
+      summary: "Add a new product (Role: Admin)"
+      tags:
+        - "Product"
+      security:
+        - jwt: []
+      parameters:
+        - name: "addProductReq"
+          in: "body"
+          description: "Add product request body"
+          required: true
+          schema:
+            $ref: "#/components/schemas/addProductReq"
+      responses:
+        200:
+          description: "Product added successfully"
+          schema:
+            $ref: "#/components/schemas/addProductRes"
+        400:
+          description: "Invalid request body"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+  /api/product/{productId}:
+    put:
+      summary: "Update product by productId (Role: Admin)"
+      tags:
+        - "Product"
+      security:
+        - jwt: []
+      parameters:
+        - in: "path"
+          name: "productId"
+          description: "Product ID"
+          required: true
+
+        - in: "body"
+          name: "body"
+          description: "Updated product object"
+          type: "object"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+                minLength: 2
+                maxLength: 20
+              description:
+                type: "string"
+                minLength: 2
+                maxLength: 20
+              price:
+                type: "number"
+                minimum: 1
+              categoryId:
+                type: "string"
+
+      responses:
+        200:
+          description: "Product updated successfully"
+          schema:
+            $ref: "#/components/schemas/updateProductRes"
+        400:
+          description: "Invalid request body"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+    get:
+      summary: "Get product by productId , PUBLIC API"
+      tags:
+        - "Product"
+      parameters:
+        - name: "productId"
+          in: "path"
+          description: "Product id"
+          required: true
+          type: "string"
+
+      responses:
+        200:
+          description: "Product fetched successfully"
+          schema:
+            $ref: "#/components/schemas/addProductRes"
+        400:
+          description: "Invalid request body"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+    delete:
+      summary: "Delete product by productId (Role: Admin)"
+      tags:
+        - "Product"
+      security:
+        - jwt: []
+      parameters:
+        - name: "productId"
+          in: "path"
+          description: "Product id"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Product deleted successfully"
+          schema:
+            $ref: "#/components/schemas/deleteProductRes"
+        400:
+          description: "Invalid request body"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+  /api/product/all:
+    get:
+      summary: "Get all products ,PUBLIC API"
+      tags:
+        - "Product"
+      parameters:
+        - name: "page"
+          in: "query"
+          description: "Page number"
+          required: true
+          type: "number"
+        - name: "limit"
+          in: "query"
+          description: "Number of orders per page"
+          required: true
+          type: "number"
+      responses:
+        200:
+          description: "Products fetched successfully"
+          schema:
+            $ref: "#/components/schemas/getAllProductRes"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+
+  /api/order/add:
+    post:
+      summary: "Add a new order, (Role: User)"
+      tags:
+        - "Order"
+      security:
+        - jwt: []
+      parameters:
+        - name: "addOrderReq"
+          in: "body"
+          description: "Add order request body"
+          required: true
+          schema:
+            $ref: "#/components/schemas/addOrderReq"
+      responses:
+        200:
+          description: "Order added successfully"
+          schema:
+            $ref: "#/components/schemas/addOrderRes"
+        400:
+          description: "Invalid request body"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+  /api/order/status/{orderId}:
+    patch:
+      summary: "Update order status by orderId , (Role: Admin)"
+      tags:
+        - "Order"
+      security:
+        - jwt: []
+      parameters:
+        - in: "path"
+          name: "orderId"
+          description: "Order ID"
+          required: true
+
+        - in: "body"
+          name: "body"
+          description: "Updated order object"
+          type: "object"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              status:
+                type: "string"
+                enum:
+                  - "PROCESSING"
+                  - "SHIPPED"
+                  - "DELIVERED"
+            required:
+              - status
+
+      responses:
+        200:
+          description: "Order status updated successfully"
+          schema:
+            $ref: "#/components/schemas/addOrderRes"
+        400:
+          description: "Invalid request body"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+  /api/order/{orderId}:
+    get:
+      summary: "Get order by orderId, (Role: Admin, User)"
+      tags:
+        - "Order"
+      security:
+        - jwt: []
+      parameters:
+        - name: "orderId"
+          in: "path"
+          description: "Order id"
+          required: true
+          type: "string"
+
+      responses:
+        200:
+          description: "Order fetched successfully"
+          schema:
+            $ref: "#/components/schemas/addOrderRes"
+        400:
+          description: "Invalid request body"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+  /api/order/all:
+    get:
+      summary: "Get all orders, (Role: Admin, User)"
+      tags:
+        - "Order"
+      security:
+        - jwt: []
+      # add page, limit in query required  true
+      parameters:
+        - name: "page"
+          in: "query"
+          description: "Page number"
+          required: true
+          type: "number"
+        - name: "limit"
+          in: "query"
+          description: "Number of orders per page"
+          required: true
+          type: "number"
+
+      responses:
+        200:
+          description: "Orders fetched successfully"
+          schema:
+            $ref: "#/components/schemas/getAllOrderRes"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+
+  /api/rating/add:
+    post:
+      summary: "Add a new rating, (Role: User)"
+      tags:
+        - "Rating & Review"
+      security:
+        - jwt: []
+      parameters:
+        - name: "addRatingReq"
+          in: "body"
+          description: "Add rating request body"
+          required: true
+          schema:
+            $ref: "#/components/schemas/addRatingReq"
+      responses:
+        200:
+          description: "Rating added successfully"
+          schema:
+            $ref: "#/components/schemas/addRatingRes"
+        400:
+          description: "Invalid request body"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+  /api/rating/{ratingId}:
+    put:
+      summary: "Update rating by ratingId, (Role: User)"
+      tags:
+        - "Rating & Review"
+      security:
+        - jwt: []
+      parameters:
+        - in: "path"
+          name: "ratingId"
+          description: "Rating ID"
+          required: true
+
+        - in: "body"
+          name: "body"
+          description: "Updated rating object"
+          type: "object"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              rating:
+                type: "number"
+                required: true
+              review:
+                type: "string"
+                required: true
+
+      responses:
+        200:
+          description: "Rating updated successfully"
+          schema:
+            $ref: "#/components/schemas/addRatingRes"
+        400:
+          description: "Invalid request body"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+    get:
+      summary: "Get rating by ratingId, PUBLIC API"
+      tags:
+        - "Rating & Review"
+      parameters:
+        - name: "ratingId"
+          in: "path"
+          description: "Rating id"
+          required: true
+          type: "string"
+
+      responses:
+        200:
+          description: "Rating fetched successfully"
+          schema:
+            $ref: "#/components/schemas/addRatingRes"
+        400:
+          description: "Invalid request body"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+  /api/rating/byProductId/{productId}:
+    get:
+      summary: "Get rating by productId, PUBLIC API"
+      tags:
+        - "Rating & Review"
+      parameters:
+        - name: "productId"
+          in: "path"
+          description: "Product id"
+          required: true
+          type: "string"
+
+      responses:
+        200:
+          description: "Rating fetched successfully"
+          schema:
+            $ref: "#/components/schemas/getRatingByProductIdRes"
+        400:
+          description: "Invalid request body"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/components/schemas/requestErrorRes"
